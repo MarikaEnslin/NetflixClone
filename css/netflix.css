@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+    margin:0; 
+    padding: 0px 0px 0px 15px;
+    padding-left: clamp(15px, 2vw, 50px);
+}
+
+#scrollingList {
+    display:flex; 
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x:auto;
+    background-color: black;
+    width: 100%;
+}
+
+.mainArea{
+    display: flex;
+    flex-direction: column;
+    
+
+}
+
+/* The navigation bar */
+.navbar {
+    overflow: hidden;
+    background-color: black;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
+}
+
+.displayArea{
+    margin: 20px;
+    padding-top: 380px;
+}  
+
+#preview{
+    display: flex;
+    width: 800px;
+    height: 300px;
+    background-color: black;
+    margin: 20px;
+}
+#previewLeft{
+    margin: 20px;
+}
+#previewRight{
+    margin: 20px;
+    padding-left: 50px;
+}
+
+
+.mediaCard {
+    width: 160px;
+    height: 240px;
+    background-color: white;
+    margin: 5px;
+}
+
+.mediaCard-image{
+    width: 160px;
+    height: 210px;
+}
+.mediaCard-button{
+    margin-left: 40px;
+}
+
+#divider{
+    margin: 20px;
+}
+
+h1, h2, h3{
+    color: white;
+}
+
+#menubar{
+    height: 60px;
+    display: flex;
+}
+#menubarItem{
+    padding: 10px;
+}
+
+#menubarImg{
+    height: 60px;
+    padding: 10px;
+}
+p{
+    color: white;
+    font-size: 120%;
+}

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+
+    <!-- Bootstrap CSS -->
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+                integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        -->
+
+    <link rel="stylesheet" href="css/netflix.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="watchList.json"></script>
+</head>
+
+<body>
+
+    <main id="myApp" class="mainArea">
+        <div class="navbar">
+            <div id="menubar">
+                <div>
+                    <img id="menubarImg" src="./images/logo.jpg" alt="Netflix logo">
+                </div>
+                <div id="menubarItem">
+                    <h3>Home</h3>
+                </div>
+                <div id="menubarItem">
+                    <h3>My list</h3>
+                </div>
+                <div id="menubarItem">
+                    <input type="text" v-model="searchString">
+                    <button v-on:click="searchMovie()">Search</button>
+                </div>
+            </div>
+            <div id="divider">
+            </div>
+            <div id="preview">
+                <div id="previewLeft">
+                    <p>{{previewName}}</p>
+                    <p>{{previewDescription}}</p>
+                    <p>{{previewActor}}</p>
+                </div>
+                <div id="previewRight">
+                    <img class="mediaCard-image" v-bind:src="previewImage">
+                </div>
+            </div>
+        </div>
+        <div class="displayArea">
+            <div id="divider"></div>
+            <div>
+                <h1>Action</h1>
+            </div>
+            <div id="scrollingList">
+                <!-- <div class="mediaCard" v-for="item1 in actionMovieArr" :key="item1.name"> {{ item1.name }} -->
+                <div class="mediaCard" v-for="item1 in actionMovieArr" :key="item1.id">
+                    <div class="mediaCard-header">
+                        <img class="mediaCard-image" v-bind:src="item1.imagePath" v-on:click="previewPane(item1)" alt="">
+                    </div>
+                    <div>
+                        <button class="mediaCard-button" v-on:click="addMovie(item1)">Add to list</button>
+                    </div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div>
+                <h1>Thriller</h1>
+            </div>
+            <div id="scrollingList">
+                <div class="mediaCard" v-for="item2 in thrillerMovieArr" :key="item2.id">
+                    <div class="mediaCard-header">
+                        <img class="mediaCard-image" v-bind:src="item2.imagePath" v-on:click="previewPane(item2)" alt="">
+                    </div>
+                    <div>
+                        <button class="mediaCard-button" v-on:click="addMovie(item2)">Add to list</button>
+                    </div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div>
+                <h1>Animation</h1>
+            </div>
+            <div id="scrollingList">
+                <div class="mediaCard" v-for="item3 in animationMovieArr" :key="item3.id">
+                    <div class="mediaCard-header">
+                        <img class="mediaCard-image" v-bind:src="item3.imagePath" v-on:click="previewPane(item3)" alt="">
+                    </div>
+                    <div>
+                        <button class="mediaCard-button" v-on:click="addMovie(item3)">Add to list</button>
+                    </div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div>
+                <h1>My watchlist</h1>
+            </div>
+            <div id="scrollingList">
+                <div class="mediaCard" v-for="item,index in movieArr" :key="item.id">
+                    <div class="mediaCard-header">
+                        <img class="mediaCard-image" v-bind:src="item.imagePath" v-on:click="previewPane(item)" alt="">
+                    </div>
+                    <div>
+                        <button class="mediaCard-button" v-on:click="removeMovie(index)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        //          console.log("before import");
+        //import movieArr from "watchList.json";        
+        //        import movieArr from "./data/watchList.json";
+        //        console.log("after import");
+        //        console.log(movieArr);
+
+        new Vue({
+            el: '#myApp',
+            //              data: movieArr,
+
+            data: {
+                searchString: '',
+                previewName: '',
+                previewDescription: '',
+                previewActor: '',
+                previewImage: '',
+
+                movieArr: [],
+                /*                    {
+                                        id: '1',
+                                        name: 'Avatar',
+                                        description: 'This movie is about Avatar',
+                                        actor: 'James Cameron',
+                                        imagePath: './images/Avatar.jpg'
+                                    },
+                                    {
+                                        id: '1',
+                                        name: 'Star Wars',
+                                        description: 'This movie is about Star Wars',
+                                        actor: 'George Lucas1',
+                                        imagePath: "./images/StarWars.jpg"
+                                    },
+                                    {
+                                        id: '1',
+                                        name: 'Lord of the Rings',
+                                        description: 'This movie is about Lord of the Rings',
+                                        actor: 'George Lucas2',
+                                        imagePath: "./images/LordOfTheRings.jpg"
+                                    },
+                                    {
+                                        id: '1',
+                                        name: 'The Maze Runner',
+                                        description: 'This movie is about The Maze Runner',
+                                        actor: 'George Lucas3',
+                                        imagePath: "./images/TheMazeRunner.jpg"
+                                    }
+                                ],
+                 */
+
+                 allMovieArr: [
+                    {
+                        id: '1',
+                        name: 'The Maze Runner',
+                        description: 'This movie is about The Maze Runner',
+                        actor: 'Peter Hughes',
+                        genre: 'action',
+                        imagePath: './images/TheMazeRunner.jpg'
+                    },
+                    {
+                        id: '2',
+                        name: 'Bullet to the Head',
+                        description: 'This movie is about Bullet to the Head',
+                        actor: 'James Cameron',
+                        genre: 'action',
+                        imagePath: './images/BulletToTheHead.jpg'
+                    },
+                    {
+                        id: '3',
+                        name: 'Jack Reacher',
+                        description: 'This movie is about Jack Reacher',
+                        actor: 'George Lucas',
+                        genre: 'action',
+                        imagePath: './images/JackReacher.jpg'
+                    },
+                    {
+                        id: '4',
+                        name: 'Jason Bourne',
+                        description: 'This movie is about Jason Bourne',
+                        actor: 'John Senna',
+                        genre: 'action',
+                        imagePath: './images/JasonBourne.jpg'
+                    },
+                    {
+                        id: '5',
+                        name: 'Next',
+                        description: 'This movie is about Next',
+                        actor: 'Sam Smith',
+                        genre: 'action',
+                        imagePath: './images/Next.jpg'
+                    },
+                    {
+                        id: '6',
+                        name: 'Pain and Gain',
+                        description: 'This movie is about Pain and Gain',
+                        actor: 'James Cameron',
+                        genre: 'action',
+                        imagePath: './images/PainAndGain.jpg'
+                    },
+                    {
+                        id: '7',
+                        name: 'RoboCop',
+                        description: 'This movie is about RoboCop',
+                        actor: 'Arnold Swartzneger',
+                        genre: 'action',
+                        imagePath: './images/Robocop.jpg'
+                    },
+                    {
+                        id: '8',
+                        name: 'Red Notice',
+                        description: 'This movie is about Red Notice',
+                        actor: 'Tom Jones',
+                        genre: 'action',
+                        imagePath: './images/RedNotice.jpg'
+                    },
+                    {
+                        id: '9',
+                        name: 'Avatar',
+                        description: 'This movie is about Avatar',
+                        actor: 'Cameron Diaz',
+                        genre: 'action',
+                        imagePath: './images/Avatar.jpg'
+                    },
+                    {
+                        id: '10',
+                        name: 'Star Wars',
+                        description: 'This movie is about Star Wars',
+                        actor: 'George Luas',
+                        genre: 'action',
+                        imagePath: './images/StarWars.jpg'
+                    },
+                    {
+                        id: '11',
+                        name: 'The Meg',
+                        description: 'This movie is about the Meg',
+                        actor: 'Will Smith',
+                        genre: 'action',
+                        imagePath: './images/TheMeg.jpg'
+                    },
+                    {
+                        id: '12',
+                        name: 'Close Enough',
+                        description: 'This movie is about Close Enough',
+                        actor: 'Cameron Diaz',
+                        genre: 'animation',
+                        imagePath: './images/CloseEnough.jpg'
+                    },
+                    {
+                        id: '13',
+                        name: 'King Julien',
+                        description: 'This movie is about King Julien',
+                        actor: 'George Luas',
+                        genre: 'animation',
+                        imagePath: './images/KingJulien.jpg'
+                    },
+                    {
+                        id: '14',
+                        name: 'Madagascar',
+                        description: 'This movie is about the Madagascar',
+                        actor: 'Will Smith',
+                        genre: 'animation',
+                        imagePath: './images/Madagascar.jpg'
+                    },
+                    {
+                        id: '15',
+                        name: 'The Craods',
+                        description: 'This movie is about The Craods',
+                        actor: 'Carla Enslin',
+                        genre: 'animation',
+                        imagePath: './images/TheCraods.jpg'
+                    },
+                    {
+                        id: '16',
+                        name: 'Army of thieves',
+                        description: 'This movie is about Army Of Thieves',
+                        actor: 'Cameron Diaz',
+                        genre: 'thriller',
+                        imagePath: './images/ArmyOfThieves.jpg'
+                    },
+                    {
+                        id: '17',
+                        name: 'Awake',
+                        description: 'This movie is about Awake',
+                        actor: 'George Luas',
+                        genre: 'thriller',
+                        imagePath: './images/Awake.jpg'
+                    },
+                    {
+                        id: '18',
+                        name: 'Exit',
+                        description: 'This movie is about the Exit',
+                        actor: 'Will Smith',
+                        genre: 'thriller',
+                        imagePath: './images/Exit.jpg'
+                    },
+                    {
+                        id: '19',
+                        name: 'Hypnotic',
+                        description: 'This movie is about Hypnotic',
+                        actor: 'Carla Enslin',
+                        genre: 'thriller',
+                        imagePath: './images/Hypnotic.jpg'
+                    },
+                    {
+                        id: '20',
+                        name: 'I Care a lot.jpg',
+                        description: 'This movie is about I Care A Lot',
+                        actor: 'Cameron Diaz',
+                        genre: 'thriller',
+                        imagePath: './images/ICareALot.jpg'
+                    },
+                    {
+                        id: '21',
+                        name: 'Intrusion',
+                        description: 'This movie is about Intrusion',
+                        actor: 'George Luas',
+                        genre: 'thriller',
+                        imagePath: './images/Intrusion.jpg'
+                    },
+                    {
+                        id: '22',
+                        name: 'Out Of Sight',
+                        description: 'This movie is about the Out Of Sight',
+                        actor: 'Will Smith',
+                        genre: 'thriller',
+                        imagePath: './images/OutOfSight.jpg'
+                    },
+                    {
+                        id: '23',
+                        name: 'The Intruder',
+                        description: 'This movie is about The Intruder',
+                        actor: 'Carla Enslin',
+                        genre: 'thriller',
+                        imagePath: './images/TheIntruder.jpg'
+                    },
+                ],
+
+            },
+
+            created: function () {
+                this.movieArr = JSON.parse(localStorage.getItem("movieList")) || [];
+                this.previewName = this.allMovieArr[0].name;
+                this.previewDescription = this.allMovieArr[0].description;
+                this.previewActor = this.allMovieArr[0].actor;
+                this.previewImage = this.allMovieArr[0].imagePath;
+            },
+
+            updated: function () {
+                localStorage.setItem("movieList", JSON.stringify(this.movieArr));
+            },
+
+            // define methods under the `methods` object
+            methods: {
+                removeMovie: function (myIndex) {
+                    this.movieArr.splice(myIndex, 1);
+                },
+
+                addMovie: function (myItem) {
+                    if (!this.movieArr.includes(myItem)) {
+                        this.movieArr.unshift(myItem);
+                        if (this.movieArr.length > 20) {
+                            this.movieArr.pop();
+                        }
+                    }
+                                        
+
+                },
+                searchMovie: function () {
+                    let upperSearchString = this.searchString.toUpperCase();
+                    for (i = 0; i < this.movieArr.length; i++) {
+                        if (this.movieArr[i].name.toUpperCase() == upperSearchString || this.movieArr[i].actor.toUpperCase() == upperSearchString) {
+                            console.log(this.movieArr[i]);
+                        }
+
+                    }
+                },
+
+                previewPane: function (myItem) {
+                    this.previewName = myItem.name;
+                    this.previewDescription = myItem.description;
+                    this.previewActor = myItem.actor;
+                    this.previewImage = myItem.imagePath;
+                }
+
+            },
+            computed: {
+                animationMovieArr: function () {
+                return this.allMovieArr.filter(function(movie) {
+                                        return movie.genre == "animation"; })
+                },
+                actionMovieArr: function () {
+                    return this.allMovieArr.filter(function(movie) {
+                                        return movie.genre == "action"; })
+                },
+                thrillerMovieArr: function () {
+                    return this.allMovieArr.filter(function(movie) {
+                                        return movie.genre == "thriller"; })
+                },
+
+            },            
+        })
+
+
+
+        /*            var app = new Vue({
+                       el: '#assignment',
+                      data: {
+                        message: '',
+                       },
+        */
+              // define methods under the `methods` object
+        /*               methods: {
+                        toggleMessage: function (event) {
+                          if (this.visible == true){
+                            this.visible = false
+                          }
+                          else{
+                            this.visible = true
+                          }
+                        }
+                       }
+                    })
+         */
+
+
+    </script>
+
+    <!-- <script type="text/javascript" src="js/ToDoApp.js"></script> -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <!--     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+ -->
+
+</body>
+
+</html>
