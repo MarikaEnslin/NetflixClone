@@ -14,7 +14,6 @@
 
     <link rel="stylesheet" href="css/netflix.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="watchList.json"></script>
 </head>
 
 <body>
@@ -26,11 +25,21 @@
                     <img id="menubarImg" src="./images/logo.jpg" alt="Netflix logo">
                 </div>
                 <div id="menubarItem">
-                    <h3>Home</h3>
+                    <a href="index.html">Home</a>
                 </div>
                 <div id="menubarItem">
-                    <h3>My list</h3>
+                    <a href="#myWatchlist">My watchlist</a>
                 </div>
+                <div id="menubarItem">
+                    <a href="#myAction">Action</a>
+                </div>
+                <div id="menubarItem">
+                    <a href="#myThriller">Thriller</a>
+                </div>
+                <div id="menubarItem">
+                    <a href="#myAnimation">Animation</a>
+                </div>
+
                 <div id="menubarItem">
                     <input type="text" v-model="searchString">
                     <button v-on:click="searchMovie()">Search</button>
@@ -44,14 +53,21 @@
                     <p>{{previewDescription}}</p>
                     <p>{{previewActor}}</p>
                 </div>
-                <div id="previewRight">
+                <div id="previewCenter">
                     <img class="mediaCard-image" v-bind:src="previewImage">
+                </div>
+                <div id="previewRight">
+                    <h2 v-if="visible">Search Results</h2>
+                    <div v-for="result1 in searchResult">
+                        <p v-if="visible">{{result1}}</p>
+                    </div>
+                    <button v-if="visible" v-on:click="noSearchResults()">Close</button>
                 </div>
             </div>
         </div>
         <div class="displayArea">
             <div id="divider"></div>
-            <div>
+            <div id="myAction">
                 <h1>Action</h1>
             </div>
             <div id="scrollingList">
@@ -66,7 +82,7 @@
                 </div>
             </div>
             <div id="divider"></div>
-            <div>
+            <div id="myThriller">
                 <h1>Thriller</h1>
             </div>
             <div id="scrollingList">
@@ -80,7 +96,7 @@
                 </div>
             </div>
             <div id="divider"></div>
-            <div>
+            <div id="myAnimation">
                 <h1>Animation</h1>
             </div>
             <div id="scrollingList">
@@ -94,7 +110,7 @@
                 </div>
             </div>
             <div id="divider"></div>
-            <div>
+            <div id="myWatchlist">
                 <h1>My watchlist</h1>
             </div>
             <div id="scrollingList">
@@ -112,11 +128,6 @@
 
 
     <script>
-        //          console.log("before import");
-        //import movieArr from "watchList.json";        
-        //        import movieArr from "./data/watchList.json";
-        //        console.log("after import");
-        //        console.log(movieArr);
 
         new Vue({
             el: '#myApp',
@@ -128,40 +139,12 @@
                 previewDescription: '',
                 previewActor: '',
                 previewImage: '',
+                searchResult: [],
+                visible: false,
 
                 movieArr: [],
-                /*                    {
-                                        id: '1',
-                                        name: 'Avatar',
-                                        description: 'This movie is about Avatar',
-                                        actor: 'James Cameron',
-                                        imagePath: './images/Avatar.jpg'
-                                    },
-                                    {
-                                        id: '1',
-                                        name: 'Star Wars',
-                                        description: 'This movie is about Star Wars',
-                                        actor: 'George Lucas1',
-                                        imagePath: "./images/StarWars.jpg"
-                                    },
-                                    {
-                                        id: '1',
-                                        name: 'Lord of the Rings',
-                                        description: 'This movie is about Lord of the Rings',
-                                        actor: 'George Lucas2',
-                                        imagePath: "./images/LordOfTheRings.jpg"
-                                    },
-                                    {
-                                        id: '1',
-                                        name: 'The Maze Runner',
-                                        description: 'This movie is about The Maze Runner',
-                                        actor: 'George Lucas3',
-                                        imagePath: "./images/TheMazeRunner.jpg"
-                                    }
-                                ],
-                 */
 
-                 allMovieArr: [
+                allMovieArr: [
                     {
                         id: '1',
                         name: 'The Maze Runner',
@@ -375,16 +358,17 @@
                             this.movieArr.pop();
                         }
                     }
-                                        
-
                 },
-                searchMovie: function () {
-                    let upperSearchString = this.searchString.toUpperCase();
-                    for (i = 0; i < this.movieArr.length; i++) {
-                        if (this.movieArr[i].name.toUpperCase() == upperSearchString || this.movieArr[i].actor.toUpperCase() == upperSearchString) {
-                            console.log(this.movieArr[i]);
-                        }
 
+                searchMovie: function () {
+                    this.searchResult = [];
+                    let upperSearchString = this.searchString.toUpperCase();
+                    this.searchString = "";
+                    for (i = 0; i < this.allMovieArr.length; i++) {
+                        if (this.allMovieArr[i].name.toUpperCase() == upperSearchString || this.allMovieArr[i].actor.toUpperCase() == upperSearchString) {
+                            this.searchResult.push(this.allMovieArr[i].name);
+                            this.visible = true;
+                        }
                     }
                 },
 
@@ -393,6 +377,10 @@
                     this.previewDescription = myItem.description;
                     this.previewActor = myItem.actor;
                     this.previewImage = myItem.imagePath;
+                },
+
+                noSearchResults(){
+                    this.visible = false;
                 }
 
             },
@@ -413,27 +401,6 @@
             },            
         })
 
-
-
-        /*            var app = new Vue({
-                       el: '#assignment',
-                      data: {
-                        message: '',
-                       },
-        */
-              // define methods under the `methods` object
-        /*               methods: {
-                        toggleMessage: function (event) {
-                          if (this.visible == true){
-                            this.visible = false
-                          }
-                          else{
-                            this.visible = true
-                          }
-                        }
-                       }
-                    })
-         */
 
 
     </script>
